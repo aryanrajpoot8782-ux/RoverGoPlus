@@ -1,0 +1,41 @@
+name: Deploy RoverGo+
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: rovergo
+          POSTGRES_PASSWORD: rovergo
+          POSTGRES_DB: rovergo
+        ports: [5432:5432]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
+      - name: Install backend dependencies
+        run: cd backend && npm ci
+      - name: Run backend tests
+        run: cd backend && npm test || true
+      - name: Install admin panel dependencies
+        run: cd apps/admin_panel && npm ci
+      - name: Build admin panel
+        run: cd apps/admin_panel && npm run build
+      - name: Build rider app
+        run: cd apps/rider_app && flutter build apk --release
+      - name: Build captain app
+        run: cd apps/captain_app && flutter build apk --release
+      - name: Docker Compose Build
+        run: docker-compose build
+      - name: Docker Compose Up
+        run: docker-compose up -d

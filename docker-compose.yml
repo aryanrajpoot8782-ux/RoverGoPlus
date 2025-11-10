@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  backend:
+    build: ./backend
+    env_file:
+      - ./backend/.env
+    ports:
+      - '4000:4000'
+    depends_on:
+      - db
+    command: pm2-runtime dist/index.js
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: rovergo
+      POSTGRES_PASSWORD: rovergo
+      POSTGRES_DB: rovergo
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  rovergo:
+    build: ./apps/RoverGo
+    ports:
+      - '8081:8081'
+  rovergocaptain:
+    build: ./apps/RoverGoCaptain
+    ports:
+      - '8082:8082'
+  admin_panel:
+    build: ./apps/admin_panel
+    ports:
+      - '5173:5173'
+volumes:
+  pgdata:
