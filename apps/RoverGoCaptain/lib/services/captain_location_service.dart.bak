@@ -1,0 +1,30 @@
+import 'package:background_location_tracker/background_location_tracker.dart';
+import '../socket/captain_socket.dart';
+
+class CaptainLocationService {
+  static bool _running = false;
+
+  static Future<void> start(String captainId) async {
+    if (_running) return;
+
+    await BackgroundLocationTracker.initialize();
+
+    BackgroundLocationTracker.registerLocationUpdate((location) {
+      CaptainSocket.sendLiveLocation(
+        captainId,
+        location.latitude,
+        location.longitude,
+      );
+    });
+
+    await BackgroundLocationTracker.startLocationService();
+    _running = true;
+  }
+
+  static Future<void> stop() async {
+    if (!_running) return;
+
+    await BackgroundLocationTracker.stopLocationService();
+    _running = false;
+  }
+}
