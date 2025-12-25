@@ -33,4 +33,4 @@ flutter:
     - assets/bike.png
     - assets/car.png
 dependencies:
-  flutter_background_geolocation: ^4.18.2
+  # flutter_background_geolocation: ^4.18.2  # Removed: geolocator is the single source of truth

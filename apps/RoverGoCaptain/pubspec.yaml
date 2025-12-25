@@ -22,7 +22,7 @@ dependencies:
   video_player: ^2.7.2
 
   # Background tracker (lightweight) — replace with the tracker you prefer
-  background_location_tracker: ^1.0.7
+  # background_location_tracker: ^1.0.7  # Removed: geolocator is the single source of truth
 
 dev_dependencies:
   flutter_test:
